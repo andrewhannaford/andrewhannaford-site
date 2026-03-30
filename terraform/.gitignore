@@ -1,0 +1,10 @@
+# Terraform state — contains sensitive resource data, never commit
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+
+# Temp files from our manual setup (no longer needed)
+../acm-validation-records.json
+../bucket-policy.json
+../cloudfront-distribution.json
