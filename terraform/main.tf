@@ -109,6 +109,41 @@ resource "aws_route53_record" "www" {
 
 # ─── CLOUDFRONT ───────────────────────────────────────────────────────────────
 
+resource "aws_cloudfront_response_headers_policy" "site" {
+  name = "andrewhannaford-security-headers"
+
+  security_headers_config {
+    strict_transport_security {
+      access_control_max_age_sec = 31536000
+      include_subdomains         = true
+      override                   = true
+    }
+    frame_options {
+      frame_option = "DENY"
+      override     = true
+    }
+    content_type_options {
+      override = true
+    }
+    referrer_policy {
+      referrer_policy = "strict-origin-when-cross-origin"
+      override        = true
+    }
+    content_security_policy {
+      content_security_policy = "default-src 'self'"
+      override                = true
+    }
+  }
+
+  custom_headers_config {
+    items {
+      header   = "Permissions-Policy"
+      value    = "geolocation=(), microphone=(), camera=()"
+      override = true
+    }
+  }
+}
+
 resource "aws_cloudfront_origin_access_control" "site" {
   name                              = "andrewhannaford-oac"
   origin_access_control_origin_type = "s3"
@@ -135,7 +170,8 @@ resource "aws_cloudfront_distribution" "site" {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     # AWS managed CachingOptimized policy
-    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    cache_policy_id              = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    response_headers_policy_id  = aws_cloudfront_response_headers_policy.site.id
   }
 
   viewer_certificate {
