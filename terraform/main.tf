@@ -130,7 +130,7 @@ resource "aws_cloudfront_response_headers_policy" "site" {
       override        = true
     }
     content_security_policy {
-      content_security_policy = "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+      content_security_policy = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'"
       override                = true
     }
   }
